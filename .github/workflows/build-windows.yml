@@ -15,16 +15,16 @@ jobs:
           sudo apt update
           sudo apt install -y mingw-w64 cmake ninja-build
       
-      - name: Download SFML
+      - name: Copy SFML
         run: |
-          wget https://github.com/SFML/SFML/releases/download/2.6.1/SFML-2.6.1-windows-gcc-64-bit.zip
-          unzip SFML-2.6.1-windows-gcc-64-bit.zip -d sfml-windows
+          mkdir -p $GITHUB_WORKSPACE/sfml
+          cp -r $GITHUB_WORKSPACE/libs/sfml/* $GITHUB_WORKSPACE/sfml
       
       - name: Build
         run: |
           mkdir build
           cd build
-          x86_64-w64-mingw32-cmake .. -G Ninja -DCMAKE_SYSTEM_NAME=Windows -DSFML_DIR=../sfml-windows/SFML-2.6.1/lib/cmake/SFML
+          x86_64-w64-mingw32-cmake .. -G Ninja -DCMAKE_SYSTEM_NAME=Windows -DSFML_DIR=$GITHUB_WORKSPACE/sfml/SFML-2.6.1/lib/cmake/SFML
           ninja
 
       - name: Upload artifact
