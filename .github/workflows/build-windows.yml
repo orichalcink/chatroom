@@ -17,8 +17,8 @@ jobs:
       
       - name: Download SFML
         run: |
-          wget https://www.sfml-dev.org/files/SFML-2.6.1-windows-mingw-64-bit.zip
-          unzip SFML-2.6.1-windows-mingw-64-bit.zip -d sfml-windows
+          wget https://github.com/SFML/SFML/releases/download/2.6.1/SFML-2.6.1-windows-gcc-64-bit.zip
+          unzip SFML-2.6.1-windows-gcc-64-bit.zip -d sfml-windows
       
       - name: Build
         run: |
