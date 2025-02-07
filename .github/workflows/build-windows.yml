@@ -18,9 +18,7 @@ jobs:
       - name: Copy SFML
         run: |
           mkdir -p $GITHUB_WORKSPACE/sfml
-          ls $GITHUB_WORKSPACE
-          ls $GITHUB_WORKSPACE/libs
-          cp -r $GITHUB_WORKSPACE/libs/sfml/* $GITHUB_WORKSPACE/sfml
+          cp -r $GITHUB_WORKSPACE/external/SFML-2.6.1/* $GITHUB_WORKSPACE/sfml
       
       - name: Build
         run: |
