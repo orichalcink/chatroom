@@ -1,0 +1,34 @@
+name: Cross-Compile for Windows
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y mingw-w64 cmake ninja
+      
+      - name: Download SFML
+        run: |
+          wget https://www.sfml-dev.org/files/SFML-2.6.1-windows-mingw-64-bit.zip
+          unzip SFML-2.6.1-windows-mingw-64-bit.zip -d sfml-windows
+      
+      - name: Build
+        run: |
+          mkdir build
+          cd build
+          x86_64-w64-mingw32-cmake .. -G Ninja -DCMAKE_SYSTEM_NAME=Windows -DSFML_DIR=../sfml-windows/SFML-2.6.1/lib/cmake/SFML
+          ninja
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: chatroom-windows
+          path: build/*
