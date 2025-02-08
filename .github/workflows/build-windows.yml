@@ -15,17 +15,15 @@ jobs:
           sudo apt update
           sudo apt install -y mingw-w64 cmake ninja-build
 
-      - name: Copy SFML
-        run: |
-          mkdir -p $GITHUB_WORKSPACE/sfml
-          cp -r $GITHUB_WORKSPACE/external/SFML-2.6.1/* $GITHUB_WORKSPACE/sfml
-          ls -l $GITHUB_WORKSPACE/sfml
-
       - name: Build
         run: |
           mkdir build
           cd build
-          cmake .. -G Ninja -DCMAKE_SYSTEM_NAME=Windows -DSFML_DIR=$GITHUB_WORKSPACE/sfml/SFML-2.6.1/lib/cmake/SFML
+          cmake .. -G Ninja \
+            -DCMAKE_SYSTEM_NAME=Windows \
+            -DCMAKE_C_COMPILER=x86_64-w64-mingw32-gcc \
+            -DCMAKE_CXX_COMPILER=x86_64-w64-mingw32-g++ \
+            -DSFML_DIR=$GITHUB_WORKSPACE/external/SFML-2.6.1/lib/cmake/SFML
           ninja
 
       - name: Upload artifact
