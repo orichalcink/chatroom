@@ -7,7 +7,6 @@
 using namespace std::string_literals;
 
 inline constexpr const char* pink    = "\033[38;2;255;128;255m";
-inline constexpr const char* red     = "\033[38;2;255;0;0m";
 inline constexpr const char* orange  = "\033[38;2;255;128;0m";
 inline constexpr const char* yellow  = "\033[38;2;255;255;0m";
 inline constexpr const char* l_green = "\033[38;2;128;255;0m";
@@ -22,11 +21,24 @@ inline constexpr const char* d_gray  = "\033[38;2;64;64;64m";
 inline constexpr const char* gray    = "\033[38;2;128;128;128m";
 inline constexpr const char* l_gray  = "\033[38;2;192;192;192m";
 inline constexpr const char* white   = "\033[38;2;255;255;255m";
-inline constexpr const char* res     = "\033[0m";
+
+#if defined(_WIN32) || defined(_WIN64)
+
+inline constexpr const char* red      = "";
+inline constexpr const char* res      = "";
+inline constexpr size_t color_count   = 1u;
+inline constexpr const char* colors[] = {red};
+
+#else
+
+inline constexpr const char* red      = "\033[38;2;255;0;0m";
+inline constexpr const char* res      = "\033[0m";
 
 inline constexpr size_t color_count = 16u;
 inline constexpr const char* colors[] = {pink, red, orange, yellow, l_green,
    green, cyan, blue, purple, brown, d_brown, black, d_gray, gray, l_gray, white};
+
+#endif
 
 /// @brief Clear lines from terminal.
 /// @param lines Amount of lines to clear.
