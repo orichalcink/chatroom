@@ -1,8 +1,8 @@
 #include <SFML/Network.hpp>
-
+#include "io.hpp"
+#include <atomic>
 #include <mutex>
 #include <thread>
-#include "io.hpp"
 
 std::atomic<bool> quit = false;
 std::mutex mutex;
