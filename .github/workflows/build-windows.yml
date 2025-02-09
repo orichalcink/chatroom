@@ -14,11 +14,7 @@ jobs:
         run: |
           sudo apt update
           sudo apt install -y mingw-w64 cmake ninja-build
-
-      - name: Tomfoolery
-        run: |
-          x86_64-w64-mingw32-objdump -p build/server.exe | grep DLL
-
+          
       - name: Build
         run: |
           mkdir build
@@ -30,7 +26,11 @@ jobs:
             -DCMAKE_LINKER=x86_64-w64-mingw32-g++ \
             -DSFML_USE_STATIC_STD_LIBS=ON \
             -DSFML_DIR=$GITHUB_WORKSPACE/external/SFML-2.6.1/lib/cmake/SFML
-          ninja
+            ninja
+
+      - name: Tomfoolery
+        run: |
+          x86_64-w64-mingw32-objdump -p build/server.exe | grep DLL
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
