@@ -28,11 +28,11 @@ jobs:
             -DSFML_DIR=$GITHUB_WORKSPACE/external/SFML-2.6.1/lib/cmake/SFML
           ninja
 
-      - name: Copy required DLLs
-        run: |
-          ls /usr/lib/gcc/x86_64-w64-mingw32/
-          cp /usr/lib/gcc/x86_64-w64-mingw32/*/libstdc++-6.dll $GITHUB_WORKSPACE/build/
-          cp /usr/lib/gcc/x86_64-w64-mingw32/*/libgcc_s_seh-1.dll $GITHUB_WORKSPACE/build/
+      # - name: Copy required DLLs
+      #   run: |
+      #     ls /usr/lib/gcc/x86_64-w64-mingw32/
+      #     cp /usr/lib/gcc/x86_64-w64-mingw32/*/libstdc++-6.dll $GITHUB_WORKSPACE/build/
+      #     cp /usr/lib/gcc/x86_64-w64-mingw32/*/libgcc_s_seh-1.dll $GITHUB_WORKSPACE/build/
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
