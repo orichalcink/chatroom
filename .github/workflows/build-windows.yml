@@ -15,6 +15,10 @@ jobs:
           sudo apt update
           sudo apt install -y mingw-w64 cmake ninja-build
 
+      - name: Tomfoolery
+        run: |
+          x86_64-w64-mingw32-objdump -p build/server.exe | grep DLL
+
       - name: Build
         run: |
           mkdir build
@@ -34,5 +38,3 @@ jobs:
           name: chatroom-windows
           path: |
             $GITHUB_WORKSPACE/build/*
-            /usr/lib/gcc/x86_64-w64-mingw32/*/libgcc_s_seh-1.dll
-            /usr/lib/gcc/x86_64-w64-mingw32/*/libstdc++-6.dll
