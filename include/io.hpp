@@ -22,6 +22,7 @@ inline constexpr const char* gray    = "\033[38;2;128;128;128m";
 inline constexpr const char* l_gray  = "\033[38;2;192;192;192m";
 inline constexpr const char* white   = "\033[38;2;255;255;255m";
 
+// No colors on windows :(
 #if defined(_WIN32) || defined(_WIN64)
 
 inline constexpr const char* red      = "";
@@ -42,7 +43,7 @@ inline constexpr const char* colors[] = {pink, red, orange, yellow, l_green,
 
 /// @brief Clear lines from terminal.
 /// @param lines Amount of lines to clear.
-inline void clearln(int lines = 1) noexcept
+inline void clearln(int lines = 1)
 {
    for (int i = 0; i <= lines; ++i)
    {
@@ -54,8 +55,9 @@ inline void clearln(int lines = 1) noexcept
 }
 
 /// @brief Get number input.
+/// @param prompt Prompt to display.
 /// @return Number.
-inline int getInteger(const std::string& prompt) noexcept
+inline int getInteger(const std::string& prompt)
 {
    int number;
 

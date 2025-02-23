@@ -79,6 +79,8 @@ void sendMessages(sf::TcpSocket& socket, const std::string& username)
          return;
       }
 
+      std::cout << username << ": " << message << std::endl;
+
       sf::Packet packet;
       packet << username + ": " + message;
 
