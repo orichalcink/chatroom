@@ -4,46 +4,27 @@
 #include <iostream>
 #include <limits>
 
-using namespace std::string_literals;
+#if defined(_WIN32) || defined(__WIN64)
 
-inline constexpr const char* pink    = "\033[38;2;255;128;255m";
-inline constexpr const char* orange  = "\033[38;2;255;128;0m";
-inline constexpr const char* yellow  = "\033[38;2;255;255;0m";
-inline constexpr const char* l_green = "\033[38;2;128;255;0m";
-inline constexpr const char* green   = "\033[38;2;0;255;0m";
-inline constexpr const char* cyan    = "\033[38;2;0;255;255m";
-inline constexpr const char* blue    = "\033[38;2;0;0;255m";
-inline constexpr const char* purple  = "\033[38;2;128;0;255m";
-inline constexpr const char* brown   = "\033[38;2;139;69;19m";
-inline constexpr const char* d_brown = "\033[38;2;84;57;44m";
-inline constexpr const char* black   = "\033[38;2;0;0;0m";
-inline constexpr const char* d_gray  = "\033[38;2;64;64;64m";
-inline constexpr const char* gray    = "\033[38;2;128;128;128m";
-inline constexpr const char* l_gray  = "\033[38;2;192;192;192m";
-inline constexpr const char* white   = "\033[38;2;255;255;255m";
-
-// No colors on windows :(
-#if defined(_WIN32) || defined(_WIN64)
-
-inline constexpr const char* red      = "";
-inline constexpr const char* res      = "";
+inline constexpr const char* colors[] = {""};
 inline constexpr size_t color_count   = 1u;
-inline constexpr const char* colors[] = {red};
+inline constexpr const char* res      = "";
 
 #else
 
-inline constexpr const char* red      = "\033[38;2;255;0;0m";
+inline constexpr size_t color_count   = 16u;
 inline constexpr const char* res      = "\033[0m";
-
-inline constexpr size_t color_count = 16u;
-inline constexpr const char* colors[] = {pink, red, orange, yellow, l_green,
-   green, cyan, blue, purple, brown, d_brown, black, d_gray, gray, l_gray, white};
+inline constexpr const char* colors[] = {
+   "\033[38;2;255;128;255m", "\033[38;2;255;128;0m",   "\033[38;2;255;255;0m",
+   "\033[38;2;128;255;0m",   "\033[38;2;0;255;0m",     "\033[38;2;0;255;255m",
+   "\033[38;2;0;0;255m",     "\033[38;2;128;0;255m",   "\033[38;2;139;69;19m",
+   "\033[38;2;84;57;44m",    "\033[38;2;0;0;0m",       "\033[38;2;64;64;64m",
+   "\033[38;2;128;128;128m", "\033[38;2;192;192;192m", "\033[38;2;255;255;255m"
+};
 
 #endif
 
-/// @brief Clear lines from terminal.
-/// @param lines Amount of lines to clear.
-inline void clearln(int lines = 1)
+inline void clear_line(int lines = 1)
 {
    for (int i = 0; i <= lines; ++i)
    {
@@ -54,10 +35,7 @@ inline void clearln(int lines = 1)
    std::cout << std::flush;
 }
 
-/// @brief Get number input.
-/// @param prompt Prompt to display.
-/// @return Number.
-inline int getInteger(const std::string& prompt)
+inline int get_integer_input(const std::string& prompt)
 {
    int number;
 
@@ -66,19 +44,33 @@ inline int getInteger(const std::string& prompt)
       std::cout << prompt;
       std::cin >> number;
 
-      if (std::cin.fail())
-      {
-         std::cin.clear();
-         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-         clearln();
-         std::cout << red << "Invalid input. Please enter a valid integer.\n";
-      }
-      else
+      if (!std::cin.fail())
       {
          std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
          return number;
-      } 
+      }
+
+      std::cin.clear();
+      std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+      clear_line();
+      std::cout << "Invalid input. Please enter a valid integer.\n";
    }
 } 
+
+inline std::string get_valid_username(const std::string& prompt)
+{
+   std::cout << prompt;
+
+   std::string username;
+   std::getline(std::cin >> std::ws, username);
+
+   while (username.size() > 24 || username.size() < 3)
+   {
+      clear_line();
+      std::cout << "Invalid username length, try again: ";
+      std::getline(std::cin >> std::ws, username);
+   }
+   return username;
+}
 
 #endif // NETWORKING_IO_HPP

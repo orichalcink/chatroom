@@ -4,36 +4,28 @@
 #include <mutex>
 #include <thread>
 
+using Port = int;
+
 std::atomic<bool> quit = false;
 std::mutex mutex;
 
-void sendMessages(sf::TcpSocket& socket, const std::string& username);
-void receiveMessages(sf::TcpSocket& socket);
+void send_messages(sf::TcpSocket& socket, const std::string& username);
+void receive_messages(sf::TcpSocket& socket);
 
 int main()
 {
    srand(time(nullptr));
 
-   int port = getInteger("Input desired server's port: "s);
+   Port port = get_integer_input("Input desired server's port: ");
 
    sf::TcpSocket socket;
    if (socket.connect("127.0.0.1", port) != sf::Socket::Status::Done)
-      throw std::runtime_error("Could not connect!");
+      throw std::runtime_error("Could not connect to the given port!");
 
    socket.setBlocking(false);
    std::cout << "Connected to server!\n";
-   std::cout << "Please input your username: ";
 
-   std::string username;
-   std::getline(std::cin >> std::ws, username);
-
-   while (username.size() > 24 || username.size() < 3)
-   {
-      clearln();
-      std::cout << red << "Invalid username, try again: " << res;
-      std::getline(std::cin >> std::ws, username);
-   }
-
+   std::string username = get_valid_username("Please input your username: ");
    username = colors[rand() % color_count] + username + res;
 
    sf::Packet startingPacket;
@@ -45,8 +37,8 @@ int main()
       throw std::runtime_error("Could not send data!");
    }
 
-   std::thread send(sendMessages, std::ref(socket), username);
-   std::thread receive(receiveMessages, std::ref(socket));
+   std::thread send(send_messages, std::ref(socket), username);
+   std::thread receive(receive_messages, std::ref(socket));
 
    if (send.joinable())
       send.join();
@@ -62,7 +54,7 @@ int main()
    socket.disconnect();
 }
 
-void sendMessages(sf::TcpSocket& socket, const std::string& username)
+void send_messages(sf::TcpSocket& socket, const std::string& username)
 {
    while (true)
    {
@@ -70,7 +62,7 @@ void sendMessages(sf::TcpSocket& socket, const std::string& username)
 
       std::string message;
       std::getline(std::cin >> std::ws, message);
-      clearln();
+      clear_line();
 
       if (message == "exit")
       {
@@ -79,10 +71,11 @@ void sendMessages(sf::TcpSocket& socket, const std::string& username)
          return;
       }
 
-      std::cout << username << ": " << message << std::endl;
+      std::string full_message = username + ": " + message;
+      std::cout << full_message << std::endl;
 
       sf::Packet packet;
-      packet << username + ": " + message;
+      packet << full_message;
 
       std::lock_guard<std::mutex> lock (mutex);
 
@@ -94,11 +87,12 @@ void sendMessages(sf::TcpSocket& socket, const std::string& username)
    }
 }
 
-void receiveMessages(sf::TcpSocket& socket)
+void receive_messages(sf::TcpSocket& socket)
 {
    while (true)
    {
-      if (quit) return;
+      if (quit)
+         return;
 
       sf::Packet received;
 
@@ -109,7 +103,7 @@ void receiveMessages(sf::TcpSocket& socket)
          std::string message;
          received >> message;
 
-         clearln(0);
+         clear_line(0);
          std::cout << message << std::endl;
          std::cout << "Input your message ('exit' to exit): " << std::flush;
       }
